@@ -1,31 +1,34 @@
 import Axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { FaLock, FaUser } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { FaRegEye, FaRegEyeSlash, FaUser } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const Login = () => {
+  // auth Context
+  const [auth, setAuth] = useContext(AuthContext);
+
   // change page title
   useEffect(() => {
-    document.title = "Rezume | Login";
+    document.title = `${auth.appName} | Login`;
   });
-
-  //   redirect purpose
-  const navigate = useNavigate();
 
   // sweetAlert configuration
   const MySwal = withReactContent(Swal);
+
+  // change password visibility
+  const [visible, setVisible] = useState(false);
+  const togglePassword = () => {
+    setVisible(!visible);
+  };
 
   // login data field
   const [loginData, setLoginData] = useState({
     username: "",
     password: "",
   });
-
-  // auth Context
-  const [auth, setAuth] = useContext(AuthContext);
 
   // handle change on input field
   const handleChange = (e) => {
@@ -116,12 +119,16 @@ const Login = () => {
                     </div>
                     {/* Input password */}
                     <div className="input-group mb-4">
-                      <span className="input-group-text">
-                        <FaLock />
+                      <span
+                        className="input-group-text"
+                        type="button"
+                        onClick={togglePassword}
+                      >
+                        {!visible ? <FaRegEyeSlash /> : <FaRegEye />}
                       </span>
                       <input
                         className="form-control"
-                        type="password"
+                        type={!visible ? "password" : "text"}
                         placeholder="Password"
                         name="password"
                         onChange={handleChange}

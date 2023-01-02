@@ -16,6 +16,7 @@ export const AuthProvider = (props) => {
     registerUrl: `${baseUrl}/api/users`,
     loginUrl: `${baseUrl}/auth/login`,
     logoutUrl: `${baseUrl}/auth/logout`,
+    appName: `Rezume`,
   });
   return (
     <AuthContext.Provider value={[auth, setAuth]}>
