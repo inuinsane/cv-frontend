@@ -5,12 +5,12 @@ import {
   FaRegEyeSlash,
   FaRegUser,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 
 const Register = () => {
   // auth Context
-  const [auth, setAuth] = useContext(AuthContext);
+  const [auth] = useContext(AuthContext);
 
   // change password visibility
   const [vision, setVision] = useState(false);
@@ -50,10 +50,18 @@ const Register = () => {
     }
   };
 
+  // redirect
+  const navigate = useNavigate();
+
   // change page title
   useEffect(() => {
     document.title = `${auth.appName} | Register`;
+    if (auth.isLoggedIn) {
+      navigate("/dashboard");
+    }
   });
+
+  // Page layout
   return (
     <>
       <div className="bg-light min-vh-100 d-flex flex-row align-items-center dark:bg-transparent">

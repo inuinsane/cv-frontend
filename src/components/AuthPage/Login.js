@@ -1,7 +1,7 @@
 import Axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash, FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -10,9 +10,15 @@ const Login = () => {
   // auth Context
   const [auth, setAuth] = useContext(AuthContext);
 
+  // redirect purpose
+  const navigate = useNavigate();
+
   // change page title
   useEffect(() => {
     document.title = `${auth.appName} | Login`;
+    if (auth.isLoggedIn && auth.currentUser.token !== undefined) {
+      navigate("/dashboard");
+    }
   });
 
   // sweetAlert configuration
@@ -49,14 +55,10 @@ const Login = () => {
   const handleSubmit = async () => {
     try {
       await Axios.post(auth.loginUrl, loginData).then((res) => {
-        const error = res.data.error;
-        if (error) {
-          MySwal.fire({
-            icon: "error",
-            title: "Error",
-            text: error.response.data,
-          });
-        }
+        console.log(res.data.token);
+        localStorage.removeItem("auth-token");
+        localStorage.removeItem("user");
+        // set Auth data
         setAuth({
           ...auth,
           isLoggedIn: true,
@@ -101,8 +103,20 @@ const Login = () => {
               <div className="card-group d-block d-flex m-2">
                 <div className="card col-md-7 p-4 mb-0">
                   <div className="card-body">
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis"></p>
+                    <div className="row">
+                      <div className="col-6">
+                        <h1 className="mb-3">Login</h1>
+                      </div>
+                      <div className="col-6 text-end">
+                        <Link
+                          to={"/"}
+                          style={{ textDecoration: "none" }}
+                          className="btn btn-link"
+                        >
+                          Home
+                        </Link>
+                      </div>
+                    </div>
                     {/* Input username */}
                     <div className="input-group mb-3">
                       <span className="input-group-text">
@@ -150,6 +164,7 @@ const Login = () => {
                           className="btn btn-link px-0"
                           type="button"
                           to="/register"
+                          style={{ textDecoration: "none" }}
                         >
                           Register
                         </Link>
@@ -158,7 +173,8 @@ const Login = () => {
                         <Link
                           className="btn btn-link px-0"
                           type="button"
-                          to="/dashboard"
+                          to="/"
+                          style={{ textDecoration: "none" }}
                         >
                           Lupa password
                         </Link>
